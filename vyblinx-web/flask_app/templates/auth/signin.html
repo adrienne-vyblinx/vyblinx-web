@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - VYBLinx</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-signup.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">VYBLinx</div>
+            
+            <h1>Sign In</h1>
+            <p class="subtitle">Join the Viblinx community and start exploring!</p>
+
+            <form id="signinForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                            </svg>
+                        </span>
+                        <input type="email" id="email" placeholder="Enter your email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                            </svg>
+                        </span>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="warning-text" style="text-align: right;">
+                        <a href="#" style="color: #ff0066; text-decoration: none;">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-create">SIGN IN</button>
+            </form>
+
+            <div class="signin-text">
+                Don't have an account? <a href="{{ url_for('auth.signup') }}">Create Account</a>
+            </div>
+
+            <div class="divider">or</div>
+
+            <div class="social-text">Continue with</div>
+            <div class="social-buttons">
+                <button class="social-btn" aria-label="Sign in with Google">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                </button>
+
+                <button class="social-btn" aria-label="Sign in with Facebook">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
+                    </svg>
+                </button>
+
+                <button class="social-btn" aria-label="Sign in with Apple">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" fill="#000000"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="bokeh">
+                <div class="bokeh-circle"></div>
+                <div class="bokeh-circle"></div>
+                <div class="bokeh-circle"></div>
+                <div class="bokeh-circle"></div>
+            </div>
+            <div class="image-overlay"></div>
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="notch"></div>
+                    <svg class="screen-image" viewBox="0 0 260 530" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a0a2e;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="260" height="530" fill="url(#bg)"/>
+                        
+                        <ellipse cx="130" cy="200" rx="100" ry="50" fill="#ff0080" opacity="0.4" filter="blur(40px)"/>
+                        <ellipse cx="80" cy="220" rx="70" ry="35" fill="#8a2be2" opacity="0.3" filter="blur(30px)"/>
+                        <ellipse cx="180" cy="220" rx="70" ry="35" fill="#ff8c00" opacity="0.3" filter="blur(30px)"/>
+                        
+                        <rect x="50" y="240" width="15" height="40" rx="7" fill="#1a1a1a"/>
+                        <circle cx="57" cy="235" r="8" fill="#1a1a1a"/>
+                        
+                        <rect x="120" y="230" width="18" height="50" rx="9" fill="#0a0a0a"/>
+                        <circle cx="129" cy="224" r="10" fill="#0a0a0a"/>
+                        
+                        <rect x="190" y="245" width="14" height="35" rx="7" fill="#1a1a1a"/>
+                        <circle cx="197" cy="241" r="7" fill="#1a1a1a"/>
+                        
+                        <rect x="90" y="300" width="80" height="140" rx="12" fill="#2a2a2a" stroke="#ff0066" stroke-width="2"/>
+                        <rect x="95" y="305" width="70" height="130" rx="8" fill="#0a0a0a"/>
+                        
+                        <rect x="100" y="320" width="60" height="40" rx="4" fill="#ff0066" opacity="0.3"/>
+                        <circle cx="130" cy="380" r="15" fill="#ff0066" opacity="0.5"/>
+                        <rect x="105" y="405" width="50" height="4" rx="2" fill="#666"/>
+                        <rect x="105" y="415" width="40" height="4" rx="2" fill="#666"/>
+                        
+                        <circle cx="145" cy="365" r="8" fill="#ff0066"/>
+                        <text x="145" y="369" text-anchor="middle" fill="white" font-size="10">❤</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+        document.getElementById('signinForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert('Please fill in all fields!');
+                return;
+            }
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SIGNING IN...';
+            
+            try {
+                const response = await fetch('/signin_user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        email: email,
+                        password: password 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Sign in successful!');
+                    window.location.href = '/dashboard';
+                } else {
+                    alert(data.error || 'Invalid email or password. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

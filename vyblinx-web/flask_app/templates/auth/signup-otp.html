@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Your Email - VYBLinx</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-signup.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="logo">VYBLinx</div>
+            
+            <h1>Confirm Your Email</h1>
+            <p class="subtitle">We've sent a 6-digit code to your email. Enter it below to verify your account.</p>
+
+            <form id="otpForm">
+                <div class="otp-container">
+                    <input type="text" class="otp-input" maxlength="1" id="otp1" autofocus>
+                    <input type="text" class="otp-input" maxlength="1" id="otp2">
+                    <input type="text" class="otp-input" maxlength="1" id="otp3">
+                    <input type="text" class="otp-input" maxlength="1" id="otp4">
+                    <input type="text" class="otp-input" maxlength="1" id="otp5">
+                    <input type="text" class="otp-input" maxlength="1" id="otp6">
+                </div>
+
+                <div class="timer-container">
+                    <span class="timer" id="timer">00:54</span>
+                    <button type="button" class="resend-btn" id="resendBtn">Send again</button>
+                </div>
+            </form>
+
+            <div class="warning-text" style="text-align: center; margin-top: 20px;">
+                Didn't receive the code? Check your spam folder or click "Send again"
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="bokeh">
+                <div class="bokeh-circle"></div>
+                <div class="bokeh-circle"></div>
+                <div class="bokeh-circle"></div>
+                <div class="bokeh-circle"></div>
+            </div>
+            <div class="image-overlay"></div>
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <div class="notch"></div>
+                    <svg class="screen-image" viewBox="0 0 260 530" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a0a2e;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <rect width="260" height="530" fill="url(#bg)"/>
+                        
+                        <ellipse cx="130" cy="180" rx="80" ry="40" fill="#ff0080" opacity="0.3" filter="blur(30px)"/>
+                        <ellipse cx="100" cy="200" rx="60" ry="30" fill="#8a2be2" opacity="0.4" filter="blur(25px)"/>
+                        <ellipse cx="160" cy="200" rx="60" ry="30" fill="#ff8c00" opacity="0.4" filter="blur(25px)"/>
+                        
+                        <circle cx="80" cy="220" r="12" fill="#2a2a2a"/>
+                        <rect x="74" y="230" width="12" height="25" rx="3" fill="#2a2a2a"/>
+                        
+                        <circle cx="130" cy="210" r="14" fill="#1a1a1a"/>
+                        <rect x="123" y="222" width="14" height="30" rx="3" fill="#1a1a1a"/>
+                        
+                        <circle cx="180" cy="225" r="11" fill="#2a2a2a"/>
+                        <rect x="175" y="234" width="10" height="22" rx="3" fill="#2a2a2a"/>
+                        
+                        <rect x="20" y="400" width="220" height="100" rx="15" fill="#1a1a1a" opacity="0.8"/>
+                        <rect x="35" y="415" width="60" height="8" rx="4" fill="#ff0080"/>
+                        <rect x="35" y="430" width="100" height="6" rx="3" fill="#666"/>
+                        <rect x="35" y="443" width="80" height="6" rx="3" fill="#666"/>
+                        
+                        <circle cx="200" cy="440" r="18" fill="#ff0080" opacity="0.2"/>
+                        <text x="200" y="447" text-anchor="middle" fill="#ff0080" font-size="20">❤</text>
+                        
+                        <circle cx="200" cy="480" r="18" fill="#8a2be2" opacity="0.2"/>
+                        <text x="200" y="487" text-anchor="middle" fill="#8a2be2" font-size="18">➤</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const otpInputs = document.querySelectorAll('.otp-input');
+        
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                
+                if (value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                
+                if (index === otpInputs.length - 1 && value.length === 1) {
+                    const otp = Array.from(otpInputs).map(input => input.value).join('');
+                    verifyOTP(otp);
+                }
+            });
+            
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+            
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                
+                pastedData.split('').forEach((char, i) => {
+                    if (otpInputs[i]) {
+                        otpInputs[i].value = char;
+                    }
+                });
+                
+                if (pastedData.length === 6) {
+                    otpInputs[5].focus();
+                    const otp = pastedData;
+                    verifyOTP(otp);
+                }
+            });
+        });
+
+        async function verifyOTP(otp) {
+            if (otp.length !== 6) {
+                alert('Please enter all 6 digits');
+                return;
+            }
+            
+            otpInputs.forEach(input => input.disabled = true);
+            
+            try {
+                const response = await fetch('/verify_otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ otp: otp })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Email verified successfully!');
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error || 'Invalid OTP. Please try again.');
+                    otpInputs.forEach(input => {
+                        input.value = '';
+                        input.disabled = false;
+                    });
+                    otpInputs[0].focus();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                otpInputs.forEach(input => {
+                    input.value = '';
+                    input.disabled = false;
+                });
+                otpInputs[0].focus();
+            }
+        }
+
+        let timeLeft = 54;
+        const timerElement = document.getElementById('timer');
+        const resendBtn = document.getElementById('resendBtn');
+        
+        function updateTimer() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            if (timeLeft === 0) {
+                timerElement.style.color = '#ff0066';
+                resendBtn.style.display = 'inline-block';
+            } else {
+                timeLeft--;
+                setTimeout(updateTimer, 1000);
+            }
+        }
+        
+        updateTimer();
+        
+        resendBtn.addEventListener('click', async function() {
+            resendBtn.disabled = true;
+            resendBtn.textContent = 'Sending...';
+            
+            try {
+                const response = await fetch('/send_otp_email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        email: '{{session.signup_email}}'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('New OTP sent to your email!');
+                    timeLeft = 54;
+                    resendBtn.style.display = 'none';
+                    timerElement.style.color = '#1a1a1a';
+                    updateTimer();
+                    
+                    otpInputs.forEach(input => input.value = '');
+                    otpInputs[0].focus();
+                } else {
+                    alert(data.error || 'Failed to resend OTP');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                resendBtn.disabled = false;
+                resendBtn.textContent = 'Send again';
+            }
+        });
+    </script>
+</body>
+</html>
