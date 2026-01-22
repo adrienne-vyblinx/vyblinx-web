@@ -402,7 +402,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
     border-radius: 12px;
     outline: none;
     transition: all 0.3s ease;
-    color: #1a1a1a;
+    color: #008C0E;
     background: #ffffff;
     padding: 0 !important;
     line-height: 61px;
@@ -431,7 +431,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 .timer {
     font-size: 48px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: #008C0E;
     letter-spacing: 3px;
 }
 

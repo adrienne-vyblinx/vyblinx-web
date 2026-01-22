@@ -1,0 +1,113 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f5f5f5;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.top-nav {
+    max-width: 800px;
+    margin: 0 auto 60px;
+    color: #999;
+    font-size: 14px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    padding: 60px 80px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.option-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px 28px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    background: white;
+}
+
+.option-card:hover {
+    border-color: #ff0066;
+    background: rgba(255, 0, 102, 0.02);
+    transform: translateX(4px);
+}
+
+.option-card::after {
+    content: '›';
+    position: absolute;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 28px;
+    color: #ccc;
+    transition: all 0.3s ease;
+}
+
+.option-card:hover::after {
+    color: #ff0066;
+    right: 24px;
+}
+
+.option-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 6px;
+}
+
+.option-description {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    padding-right: 40px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 40px 30px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    .option-card {
+        padding: 20px 24px;
+    }
+}

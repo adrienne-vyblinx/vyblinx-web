@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Your Business Structure - VYBLinx</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account-creation.css') }}">
+</head>
+<body>
+    <div class="top-nav">Create Profile</div>
+
+    <div class="container">
+        <h1>Select Your Business Structure</h1>
+        <p class="subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas bibendum laoreet massa quis viverra.</p>
+
+        <div class="options-list">
+            <div class="option-card" onclick="selectOption('small-business')">
+                <div class="option-title">Small Business Structure</div>
+                <div class="option-description">If you are the owner or representative of a single locale or small chain of stores</div>
+            </div>
+
+            <div class="option-card" onclick="selectOption('hospitality-group')">
+                <div class="option-title">Hospitality Group</div>
+                <div class="option-description">If you are owner or representative of a medium/large corporation</div>
+            </div>
+
+            <div class="option-card" onclick="selectOption('hotel-group')">
+                <div class="option-title">Hotel / Hotels Group</div>
+                <div class="option-description">If you are owner or representative of a medium/large corporation</div>
+            </div>
+
+            <div class="option-card" onclick="selectOption('entertainment-agency')">
+                <div class="option-title">Entertainment / Marketing Agency</div>
+                <div class="option-description">If you are owner or representative of a medium/large corporation</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectOption(type) {
+            console.log('Selected:', type);
+            // Add your navigation logic here
+            window.location.href = '/account/next-step?type=' + type;
+        }
+    </script>
+</body>
+</html>
