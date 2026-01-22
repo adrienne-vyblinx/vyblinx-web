@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Details - VYBLinx</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account-creation.css') }}">
+</head>
+<body>
+    <div class="top-nav">Create Profile</div>
+
+    <div class="container">
+        <h1>Create Your Corporation</h1>
+
+        <form id="businessDetailsForm" class="details-form">
+            <div class="form-section">
+                <div class="section-title-details">Business Representative Details</div>
+                <p class="section-description">The person listed here must be a person inside the corporation with some leading roles. The person mentioned below will have full access to the whole application and will be able to grant access to other team members, make payments, open/ close stores</p>
+            </div>
+
+            <div class="right-section-profile">
+                <div class="profile-upload-area" id="profileUploadArea" onclick="document.getElementById('profileUpload').click()">
+                    <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="#ff0066" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <div class="profile-placeholder-text">Profile Picture</div>
+                    <img id="profilePreview" class="profile-preview" src="" alt="Profile preview">
+                </div>
+                <input type="file" id="profileUpload" accept="image/*" onchange="handleProfileUpload(event)">
+            </div>
+
+            <div class="form-group-label">
+                <label>Full Name*</label>
+            </div>
+
+            <div class="form-row-three">
+                <div class="form-group-third">
+                    <input type="text" id="firstName" name="first_name" placeholder="First Name*" required>
+                </div>
+                <div class="form-group-third">
+                    <input type="text" id="middleName" name="middle_name" placeholder="Middle Name">
+                </div>
+                <div class="form-group-third">
+                    <input type="text" id="surname" name="surname" placeholder="Surname*" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group-half">
+                    <label for="role">Role in the Company*</label>
+                    <input type="text" id="role" name="role" placeholder="e.g., CEO, Manager" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group-half">
+                    <label for="contactNumber">Add Contact Number*</label>
+                    <input type="tel" id="contactNumber" name="contact_number" placeholder="+1 (555) 000-0000" required>
+                </div>
+                <div class="form-group-half">
+                    <label for="companyEmail">Add Company Email*</label>
+                    <input type="email" id="companyEmail" name="company_email" placeholder="email@company.com" required>
+                    <p class="field-note">*This email will be used for communication between VYBlinx and your corporation</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn btn-back" onclick="goBack()">Back</button>
+                <button type="submit" class="btn btn-next">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let uploadedProfile = null;
+
+        function handleProfileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedProfile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profilePreview = document.getElementById('profilePreview');
+                    profilePreview.src = e.target.result;
+                    profilePreview.classList.add('active');
+                    document.getElementById('profileUploadArea').classList.add('has-image');
+                    document.querySelector('.camera-icon').style.display = 'none';
+                    document.querySelector('.profile-placeholder-text').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function checkFormValidity() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const surname = document.getElementById('surname').value.trim();
+            const role = document.getElementById('role').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const companyEmail = document.getElementById('companyEmail').value.trim();
+            const nextBtn = document.querySelector('.btn-next');
+            
+            // Check if all required fields are filled
+            if (firstName && surname && role && contactNumber && companyEmail) {
+                nextBtn.style.background = '#ff0066';
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.style.background = '#999';
+                nextBtn.disabled = true;
+            }
+        }
+
+        document.getElementById('firstName').addEventListener('input', checkFormValidity);
+        document.getElementById('surname').addEventListener('input', checkFormValidity);
+        document.getElementById('role').addEventListener('input', checkFormValidity);
+        document.getElementById('contactNumber').addEventListener('input', checkFormValidity);
+        document.getElementById('companyEmail').addEventListener('input', checkFormValidity);
+
+        window.addEventListener('DOMContentLoaded', checkFormValidity);
+
+        function goBack() {
+            window.history.back();
+        }
+
+        document.getElementById('businessDetailsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                first_name: document.getElementById('firstName').value,
+                middle_name: document.getElementById('middleName').value,
+                surname: document.getElementById('surname').value,
+                role: document.getElementById('role').value,
+                contact_number: document.getElementById('contactNumber').value,
+                company_email: document.getElementById('companyEmail').value
+            };
+
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/save-business-details', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error || 'Failed to save details');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Brand - VYBLinx</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account-creation.css') }}">
+</head>
+<body>
+    <div class="top-nav">Create Profile</div>
+
+    <div class="container">
+        <h1>Create Your Brand</h1>
+
+        <form id="brandForm" class="brand-form">
+            <div class="left-section">
+                <div class="section-title">Business Details</div>
+                
+                <div class="form-group">
+                    <label for="brandName">Name of Your Brand*</label>
+                    <input type="text" id="brandName" name="brand_name" placeholder="Enter brand name" required>
+                </div>
+
+                <div class="upload-section">
+                    <div class="section-title">Business Documentation</div>
+                    <p class="upload-description">Upload Your Trade/Business License in Order to Confirm and Verify Your Business Legitimacy</p>
+                    
+                    <label for="documentUpload" class="upload-button">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        To Upload Click Here
+                    </label>
+                    <input type="file" id="documentUpload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleDocumentUpload(event)">
+
+                    <div id="documentPreview" class="file-preview">
+                        <span class="file-name" id="documentName">TradeLicense.pdf</span>
+                        <button type="button" class="remove-file" onclick="removeDocument()">×</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="logo-upload-area" id="logoUploadArea" onclick="document.getElementById('logoUpload').click()">
+                    <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="#ff0066" stroke-width="2">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                        <circle cx="12" cy="13" r="4"></circle>
+                    </svg>
+                    <div class="logo-placeholder-text">Your Logo Here</div>
+                    <img id="logoPreview" class="logo-preview" src="" alt="Logo preview">
+                </div>
+                <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
+            </div>
+        </form>
+
+        <div class="action-buttons">
+            <button type="button" class="btn btn-back" onclick="goBack()">Back</button>
+            <button type="button" class="btn btn-next" id="nextBtn" onclick="submitForm()">Next</button>
+        </div>
+    </div>
+
+    <script>
+        let uploadedDocument = null;
+        let uploadedLogo = null;
+
+        function handleDocumentUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedDocument = file;
+                document.getElementById('documentName').textContent = file.name;
+                document.getElementById('documentPreview').classList.add('active');
+                checkFormValidity();
+            }
+        }
+
+        function removeDocument() {
+            uploadedDocument = null;
+            document.getElementById('documentUpload').value = '';
+            document.getElementById('documentPreview').classList.remove('active');
+            checkFormValidity();
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedLogo = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logoPreview = document.getElementById('logoPreview');
+                    logoPreview.src = e.target.result;
+                    logoPreview.classList.add('active');
+                    document.getElementById('logoUploadArea').classList.add('has-image');
+                    document.querySelector('.camera-icon').style.display = 'none';
+                    document.querySelector('.logo-placeholder-text').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+                checkFormValidity();
+            }
+        }
+
+        function checkFormValidity() {
+            const brandName = document.getElementById('brandName').value.trim();
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (brandName) {
+                nextBtn.style.background = '#ff0066';
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.style.background = '#999';
+                nextBtn.disabled = true;
+            }
+        }
+
+        document.getElementById('brandName').addEventListener('input', checkFormValidity);
+
+        function goBack() {
+            window.history.back();
+        }
+
+        async function submitForm() {
+            const brandName = document.getElementById('brandName').value.trim();
+            
+            if (!brandName) {
+                alert('Please enter your brand name');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('brand_name', brandName);
+            
+            if (uploadedLogo) {
+                formData.append('logo', uploadedLogo);
+            }
+            
+            if (uploadedDocument) {
+                formData.append('business_document', uploadedDocument);
+            }
+
+            const nextBtn = document.getElementById('nextBtn');
+            const originalText = nextBtn.textContent;
+            nextBtn.disabled = true;
+            nextBtn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/save-brand-details', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error || 'Failed to save brand details');
+                    nextBtn.disabled = false;
+                    nextBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                nextBtn.disabled = false;
+                nextBtn.textContent = originalText;
+            }
+        }
+    </script>
+</body>
+</html>

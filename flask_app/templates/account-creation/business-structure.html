@@ -37,10 +37,29 @@
     </div>
 
     <script>
-        function selectOption(type) {
+        async function selectOption(type) {
             console.log('Selected:', type);
-            // Add your navigation logic here
-            window.location.href = '/account/next-step?type=' + type;
+            
+            try {
+                const response = await fetch('/select-business-type', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ type: type })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.href = data.redirect;
+                } else {
+                    alert(data.error || 'Failed to save selection');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
         }
     </script>
 </body>
