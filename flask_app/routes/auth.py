@@ -122,7 +122,10 @@ def signin_user():
         if response.user:
             session['user_id'] = response.user.id
             print(f"User signed in: {response.user.id}")
-            return jsonify({"message": "Sign in successful"}), 200
+            return jsonify({
+                "message": "Sign in successful",
+                "redirect": "/account/business-structure"
+            }), 200
         else:
             return jsonify({"error": "Invalid credentials"}), 401
             
