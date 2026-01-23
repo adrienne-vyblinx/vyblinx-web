@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Club Account - VYBLinx</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account-creation.css') }}">
+</head>
+<body>
+    <div class="top-nav">Create Profile</div>
+
+    <div class="container">
+        <h1>Create Your Brand</h1>
+
+        <div class="social-club-section">
+            <div class="section-title">Social Club Account</div>
+            <p class="social-club-description">Vyblinx is, above all, a fresh take on social media. Create your account and let your Guests become ambassadors of your brand. More content means more visibility....and more growth for your business!</p>
+
+            <div class="social-club-form">
+                <div class="left-social">
+                    <div class="form-group">
+                        <label for="accountName">Account Name</label>
+                        <input type="text" id="accountName" name="account_name" placeholder="Enter your social media account name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pageDescription">Page Description</label>
+                        <textarea id="pageDescription" name="page_description" placeholder="Enter Description for your Social Club Account" rows="5" required></textarea>
+                    </div>
+                </div>
+
+                <div class="right-social">
+                    <div class="upload-label">Upload Social Club Account Wallpaper</div>
+                    <div class="wallpaper-upload-area" id="wallpaperUploadArea" onclick="document.getElementById('wallpaperUpload').click()">
+                        <svg class="camera-icon-social" viewBox="0 0 24 24" fill="none" stroke="#ff0066" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        <img id="wallpaperPreview" class="wallpaper-preview" src="" alt="Wallpaper preview">
+                    </div>
+                    <input type="file" id="wallpaperUpload" accept="image/*" onchange="handleWallpaperUpload(event)">
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button type="button" class="btn btn-back" onclick="goBack()">Back</button>
+            <button type="button" class="btn btn-next" id="nextBtn" onclick="submitForm()">Next</button>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="success-animation">
+                <div class="success-circle">
+                    <svg class="checkmark" viewBox="0 0 52 52">
+                        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                    </svg>
+                </div>
+                <div class="success-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+            <h2 class="success-title">Request Submitted</h2>
+            <p class="success-message">Sed dignissim nisl a vehicula fringilla. Nulla faucibus dui tellus, ut dignissim</p>
+        </div>
+    </div>
+
+    <script>
+        let uploadedWallpaper = null;
+
+        function handleWallpaperUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file');
+                    return;
+                }
+
+                uploadedWallpaper = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const wallpaperPreview = document.getElementById('wallpaperPreview');
+                    const cameraIcon = document.querySelector('.camera-icon-social');
+                    
+                    wallpaperPreview.src = e.target.result;
+                    wallpaperPreview.classList.add('active');
+                    cameraIcon.style.display = 'none';
+                    
+                    document.getElementById('wallpaperUploadArea').classList.add('has-image');
+                };
+                reader.readAsDataURL(file);
+                checkFormValidity();
+            }
+        }
+
+        function checkFormValidity() {
+            const accountName = document.getElementById('accountName').value.trim();
+            const pageDescription = document.getElementById('pageDescription').value.trim();
+            const nextBtn = document.getElementById('nextBtn');
+            
+            if (accountName && pageDescription) {
+                nextBtn.style.background = '#ff0066';
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.style.background = '#999';
+                nextBtn.disabled = true;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkFormValidity();
+            
+            document.getElementById('accountName').addEventListener('input', checkFormValidity);
+            document.getElementById('pageDescription').addEventListener('input', checkFormValidity);
+        });
+
+        function goBack() {
+            window.history.back();
+        }
+
+        async function submitForm() {
+            const accountName = document.getElementById('accountName').value.trim();
+            const pageDescription = document.getElementById('pageDescription').value.trim();
+            
+            if (!accountName || !pageDescription) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('account_name', accountName);
+            formData.append('page_description', pageDescription);
+            
+            if (uploadedWallpaper) {
+                formData.append('wallpaper', uploadedWallpaper);
+            }
+
+            const nextBtn = document.getElementById('nextBtn');
+            const originalText = nextBtn.textContent;
+            nextBtn.disabled = true;
+            nextBtn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/save-social-club', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showSuccessModal();
+                    
+                    setTimeout(() => {
+                        window.location.href = data.redirect;
+                    }, 3000);
+                } else {
+                    alert(data.error || 'Failed to save details');
+                    nextBtn.disabled = false;
+                    nextBtn.textContent = originalText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+                nextBtn.disabled = false;
+                nextBtn.textContent = originalText;
+            }
+        }
+
+        function showSuccessModal() {
+            const modal = document.getElementById('successModal');
+            modal.style.display = 'flex';
+            
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+    </script>
+</body>
+</html>

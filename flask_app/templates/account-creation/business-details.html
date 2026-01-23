@@ -73,50 +73,37 @@
     </div>
 
     <script>
-        let uploadedProfile = null;
+        let profilePictureData = null;
 
         function handleProfileUpload(event) {
             const file = event.target.files[0];
             if (file) {
-                uploadedProfile = file;
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file');
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const profilePreview = document.getElementById('profilePreview');
-                    profilePreview.src = e.target.result;
-                    profilePreview.classList.add('active');
-                    document.getElementById('profileUploadArea').classList.add('has-image');
-                    document.querySelector('.camera-icon').style.display = 'none';
-                    document.querySelector('.profile-placeholder-text').style.display = 'none';
+                    profilePictureData = e.target.result;
+                    
+                    const preview = document.getElementById('profilePreview');
+                    const placeholder = document.querySelector('.profile-placeholder-text');
+                    const cameraIcon = document.querySelector('.camera-icon');
+                    
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    cameraIcon.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
             }
         }
-
-        function checkFormValidity() {
-            const firstName = document.getElementById('firstName').value.trim();
-            const surname = document.getElementById('surname').value.trim();
-            const role = document.getElementById('role').value.trim();
-            const contactNumber = document.getElementById('contactNumber').value.trim();
-            const companyEmail = document.getElementById('companyEmail').value.trim();
-            const nextBtn = document.querySelector('.btn-next');
-            
-            // Check if all required fields are filled
-            if (firstName && surname && role && contactNumber && companyEmail) {
-                nextBtn.style.background = '#ff0066';
-                nextBtn.disabled = false;
-            } else {
-                nextBtn.style.background = '#999';
-                nextBtn.disabled = true;
-            }
-        }
-
-        document.getElementById('firstName').addEventListener('input', checkFormValidity);
-        document.getElementById('surname').addEventListener('input', checkFormValidity);
-        document.getElementById('role').addEventListener('input', checkFormValidity);
-        document.getElementById('contactNumber').addEventListener('input', checkFormValidity);
-        document.getElementById('companyEmail').addEventListener('input', checkFormValidity);
-
-        window.addEventListener('DOMContentLoaded', checkFormValidity);
 
         function goBack() {
             window.history.back();
@@ -125,14 +112,45 @@
         document.getElementById('businessDetailsForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const firstName = document.getElementById('firstName').value.trim();
+            const middleName = document.getElementById('middleName').value.trim();
+            const surname = document.getElementById('surname').value.trim();
+            const role = document.getElementById('role').value.trim();
+            const contactNumber = document.getElementById('contactNumber').value.trim();
+            const companyEmail = document.getElementById('companyEmail').value.trim();
+
+            if (!firstName) {
+                alert('First name is required');
+                return;
+            }
+            if (!surname) {
+                alert('Surname is required');
+                return;
+            }
+            if (!role) {
+                alert('Role in the company is required');
+                return;
+            }
+            if (!contactNumber) {
+                alert('Contact number is required');
+                return;
+            }
+            if (!companyEmail) {
+                alert('Company email is required');
+                return;
+            }
+
             const formData = {
-                first_name: document.getElementById('firstName').value,
-                middle_name: document.getElementById('middleName').value,
-                surname: document.getElementById('surname').value,
-                role: document.getElementById('role').value,
-                contact_number: document.getElementById('contactNumber').value,
-                company_email: document.getElementById('companyEmail').value
+                first_name: firstName,
+                middle_name: middleName,
+                surname: surname,
+                role: role,
+                contact_number: contactNumber,
+                company_email: companyEmail,
+                profile_picture: profilePictureData
             };
+
+            console.log('Sending data:', formData);
 
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.textContent;
@@ -149,8 +167,10 @@
                 });
 
                 const data = await response.json();
+                console.log('Response:', data);
 
                 if (response.ok) {
+                    alert('Business representative details saved successfully!');
                     window.location.href = data.redirect;
                 } else {
                     alert(data.error || 'Failed to save details');

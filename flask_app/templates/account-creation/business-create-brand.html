@@ -12,48 +12,46 @@
     <div class="container">
         <h1>Create Your Brand</h1>
 
-        <form id="brandForm" class="brand-form">
-            <div class="left-section">
+        <div class="brand-form-horizontal">
+            <div class="left-section-wide">
                 <div class="section-title">Business Details</div>
                 
                 <div class="form-group">
                     <label for="brandName">Name of Your Brand*</label>
-                    <input type="text" id="brandName" name="brand_name" placeholder="Enter brand name" required>
+                    <input type="text" id="brandName" name="brand_name" placeholder="" required>
                 </div>
 
-                <div class="upload-section">
-                    <div class="section-title">Business Documentation</div>
-                    <p class="upload-description">Upload Your Trade/Business License in Order to Confirm and Verify Your Business Legitimacy</p>
-                    
-                    <label for="documentUpload" class="upload-button">
-                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
-                        To Upload Click Here
-                    </label>
-                    <input type="file" id="documentUpload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleDocumentUpload(event)">
+                <div class="section-title" style="margin-top: 40px;">Business Documentation</div>
+                <p class="upload-description">Upload Your Trade/Business License in Order to Confirm and Verify Your Business Legitimacy</p>
+                
+                <label for="documentUpload" class="upload-button">
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    To Upload Click Here
+                </label>
+                <input type="file" id="documentUpload" accept=".pdf,.jpg,.jpeg,.png" onchange="handleDocumentUpload(event)">
 
-                    <div id="documentPreview" class="file-preview">
-                        <span class="file-name" id="documentName">TradeLicense.pdf</span>
-                        <button type="button" class="remove-file" onclick="removeDocument()">×</button>
-                    </div>
+                <div id="documentPreview" class="file-preview">
+                    <span class="file-name" id="documentName">TradeLicense.pdf</span>
+                    <button type="button" class="remove-file" onclick="removeDocument()">×</button>
                 </div>
             </div>
 
-            <div class="right-section">
-                <div class="logo-upload-area" id="logoUploadArea" onclick="document.getElementById('logoUpload').click()">
-                    <svg class="camera-icon" viewBox="0 0 24 24" fill="none" stroke="#ff0066" stroke-width="2">
+            <div class="right-section-narrow">
+                <div class="logo-upload-area-small" id="logoUploadArea" onclick="document.getElementById('logoUpload').click()">
+                    <svg class="camera-icon-small" viewBox="0 0 24 24" fill="none" stroke="#ff0066" stroke-width="2">
                         <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                         <circle cx="12" cy="13" r="4"></circle>
                     </svg>
-                    <div class="logo-placeholder-text">Your Logo Here</div>
-                    <img id="logoPreview" class="logo-preview" src="" alt="Logo preview">
+                    <img id="logoPreview" class="logo-preview-small" src="" alt="Logo preview">
                 </div>
+                <div class="logo-text">Your Logo Here</div>
                 <input type="file" id="logoUpload" accept="image/*" onchange="handleLogoUpload(event)">
             </div>
-        </form>
+        </div>
 
         <div class="action-buttons">
             <button type="button" class="btn btn-back" onclick="goBack()">Back</button>
@@ -68,6 +66,12 @@
         function handleDocumentUpload(event) {
             const file = event.target.files[0];
             if (file) {
+                // Check file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    return;
+                }
+
                 uploadedDocument = file;
                 document.getElementById('documentName').textContent = file.name;
                 document.getElementById('documentPreview').classList.add('active');
@@ -85,15 +89,29 @@
         function handleLogoUpload(event) {
             const file = event.target.files[0];
             if (file) {
+                // Check file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    return;
+                }
+
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file');
+                    return;
+                }
+
                 uploadedLogo = file;
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const logoPreview = document.getElementById('logoPreview');
+                    const cameraIcon = document.querySelector('.camera-icon-small');
+                    
                     logoPreview.src = e.target.result;
                     logoPreview.classList.add('active');
+                    cameraIcon.style.display = 'none';
+                    
                     document.getElementById('logoUploadArea').classList.add('has-image');
-                    document.querySelector('.camera-icon').style.display = 'none';
-                    document.querySelector('.logo-placeholder-text').style.display = 'none';
                 };
                 reader.readAsDataURL(file);
                 checkFormValidity();
@@ -112,6 +130,11 @@
                 nextBtn.disabled = true;
             }
         }
+
+        // Initial check
+        document.addEventListener('DOMContentLoaded', function() {
+            checkFormValidity();
+        });
 
         document.getElementById('brandName').addEventListener('input', checkFormValidity);
 
@@ -152,6 +175,7 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    alert('Brand details saved successfully!');
                     window.location.href = data.redirect;
                 } else {
                     alert(data.error || 'Failed to save brand details');
