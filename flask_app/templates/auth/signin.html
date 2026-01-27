@@ -157,7 +157,7 @@
                 
                 if (response.ok) {
                     alert('Sign in successful!');
-                    window.location.href = '/dashboard';
+                    window.location.href = '/account/business-structure';
                 } else {
                     alert(data.error || 'Invalid email or password. Please try again.');
                     submitBtn.disabled = false;
