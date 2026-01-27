@@ -7,4 +7,4 @@ def business_structure():
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
     
-    return render_template('account-creation/business-structure.html')
+    return render_template('layout/app.html')
