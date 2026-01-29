@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyblinx - My Business</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <!--Navbar-->
+        {% include 'layout/navbar.html' %}
+
+        <!-- Sidebar -->
+        {% include 'layout/sidebar.html' %}
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            {% include 'layout/header.html' %}
+
+            <!-- Content Area -->
+            {% include 'layout/content.html' %}
+        </main>
+    </div>
+</body>
+</html>
