@@ -1,0 +1,80 @@
+<!-- Content Area Component -->
+<div class="content-area">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2 class="page-title">My Business</h2>
+        <button class="create-venue-btn">Create New Venue</button>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active">Discovery Club Accounts</div>
+        <div class="tab">Social Club Accounts</div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>Store</th>
+                    <th>Country</th>
+                    <th>Province/State</th>
+                    <th>City</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1.</td>
+                    <td>
+                        <div class="store-cell">
+                            <div class="store-avatar">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%23795548'/%3E%3Ctext x='50' y='55' font-size='30' text-anchor='middle' fill='white' font-family='Arial'%3ED%3C/text%3E%3C/svg%3E" alt="Store">
+                            </div>
+                            <span>Dummy name</span>
+                        </div>
+                    </td>
+                    <td><span class="empty-value">( 0 )</span></td>
+                    <td><span class="empty-value">( 0 )</span></td>
+                    <td><span class="empty-value">( 0 )</span></td>
+                    <td style="position: relative;">
+                        <div class="action-menu" onclick="showTooltip(event)">
+                            <div class="action-dots"></div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function showTooltip(event) {
+        // Remove existing tooltip if any
+        const existingTooltip = document.querySelector('.tooltip');
+        if (existingTooltip) {
+            existingTooltip.remove();
+        }
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.innerHTML = 'Click Action Data<br>Click on Shop Details<br>Click on Discovery Club<br>Complete Existing Venue';
+        
+        event.target.closest('td').style.position = 'relative';
+        event.target.closest('td').appendChild(tooltip);
+
+        // Remove tooltip after 3 seconds
+        setTimeout(() => {
+            tooltip.remove();
+        }, 3000);
+    }
+
+    // Close tooltip when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.action-menu')) {
+            const tooltip = document.querySelector('.tooltip');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        }
+    });
+</script>
