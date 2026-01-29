@@ -156,8 +156,7 @@
                 const data = await response.json();
                 
                 if (response.ok) {
-                    alert('Sign in successful!');
-                    window.location.href = '/business-structure';
+                    window.location.href = data.redirect;
                 } else {
                     alert(data.error || 'Invalid email or password. Please try again.');
                     submitBtn.disabled = false;
